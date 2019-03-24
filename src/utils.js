@@ -4,7 +4,7 @@ export const AnalysisStatus = {
   ERROR: -1
 };
 
-export const SERVER_ADDRESS = process.env.SERVICE_ADDR ? `http://${process.env.SERVICE_ADDR}:5000` :  "http://localhost:5000";
+export const SERVER_ADDRESS = process.env.SERVICE_ADDR ? process.env.SERVICE_ADDR :  "http://localhost:5000";
 
 export const getQueryValue = variable => {
   const vars = window.location.search.substring(1).split("&");
