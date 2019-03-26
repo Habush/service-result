@@ -4,7 +4,9 @@ export const AnalysisStatus = {
   ERROR: -1
 };
 
-export const SERVER_ADDRESS = process.env.SERVICE_ADDR ? `http://${process.env.SERVICE_ADDR}:5000` :  "http://localhost:5000";
+export const SERVER_ADDRESS = process.env.SERVICE_ADDR
+  ? process.env.SERVICE_ADDR
+  : "http://localhost:5000";
 
 export const getQueryValue = variable => {
   const vars = window.location.search.substring(1).split("&");
@@ -21,4 +23,14 @@ export const fetchAnalysisStatus = id => {
   return fetch(`${SERVER_ADDRESS}/status/${id}`).then(response =>
     response.json()
   );
+};
+
+export const filterResult = (id, filter, value) => {
+  return fetch(
+    `${SERVER_ADDRESS}/filter/${id}?filter=${filter}&value=${value}`
+  ).then(response => response.json());
+};
+
+export const downloadFilteredResult = id => {
+  window.open(`${SERVER_ADDRESS}/filter/${id}/download`, "_blank");
 };
