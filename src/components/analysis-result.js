@@ -26,7 +26,6 @@ export class AnalysisResult extends React.Component {
     if (id) {
       this.setState({ analysisId: id, fetchingResult: true });
       this.props.fetchAnalysisStatus(id).then(response => {
-        console.log("Response ", response);
         this.setState({
           fetchingResult: false,
           analysisStatus: response.status,
@@ -55,7 +54,6 @@ export class AnalysisResult extends React.Component {
   }
 
   render() {
-    console.log("Expire time", this.state.expirationTime);
     const progressProps = {
       progress: this.state.analysisProgress,
       status: this.state.analysisStatus,
