@@ -11,7 +11,7 @@ module.exports = {
     path: paths.outPath,
     filename: "bundle.js"
   },
-
+  node: { fs: "empty" },
   devtool: "source-map",
   devServer: {
     contentBase: paths.outPath

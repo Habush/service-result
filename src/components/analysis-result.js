@@ -61,7 +61,9 @@ export class AnalysisResult extends React.Component {
       end: this.state.analysisEndTime,
       message: this.state.analysisStatusMessage,
       downloadResult: this.downloadResult,
-      expirationTime: this.state.expirationTime
+      expirationTime: this.state.expirationTime,
+      analysisId: this.state.analysisId,
+      server_address: SERVER_ADDRESS
     };
 
     return (
@@ -74,7 +76,7 @@ export class AnalysisResult extends React.Component {
               <Result {...progressProps} />
             ) : this.state.analysisId ? (
               this.state.fetchingResult ? (
-                <Loader />
+                <Loader message="Fetching results ..." />
               ) : (
                 <Alert
                   id="invalidID"

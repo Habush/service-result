@@ -12,12 +12,10 @@ import {
   Table
 } from "antd";
 import moment from "moment";
-import {
-  AnalysisStatus,
-  filterResult,
-  getQueryValue,
-  downloadFilteredResult
-} from "../utils";
+import { AnalysisStatus, filterResult, getQueryValue } from "../utils";
+import { Loader } from "./loader";
+import { safeDump } from "js-yaml";
+import ReactJson from "react-json-view";
 
 const formatDecimal = num => parseFloat(num).toFixed(6);
 
@@ -134,12 +132,38 @@ export class Result extends React.Component {
     super(props);
     this.state = {
       showFilterForm: false,
+      showMosesOptions: false,
+      mosesOptions: undefined,
       filterParameter: "accuracy",
       filterValue: 0.5,
       filtering: false,
       filteredResult: undefined
     };
     this.filter = this.filter.bind(this);
+    this.fetchMosesOptions = this.fetchMosesOptions.bind(this);
+  }
+
+  fetchMosesOptions() {
+    fetch(`${this.props.server_address}/session/${this.props.analysisId}`)
+      .then(res => res.json())
+      .then(
+        function(data) {
+          this.setState({ mosesOptions: data });
+        }.bind(this)
+      );
+    return <Loader message={"Fetching moses options ..."} />;
+  }
+
+  downloadMosesOptions() {
+    const yaml = `data:text/yaml;charset=utf-8, ${encodeURIComponent(
+      safeDump(this.state.mosesOptions)
+    )}`;
+    const link = document.createElement("a");
+    link.setAttribute("href", yaml);
+    link.setAttribute("download", "moses-options.yaml");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   filter() {
@@ -244,6 +268,13 @@ export class Result extends React.Component {
                   Filter results
                 </Button>
                 <Button
+                  onClick={() => this.setState({ showMosesOptions: true })}
+                  style={{ marginRight: 5 }}
+                >
+                  <Icon type="eye" />
+                  View moses options
+                </Button>
+                <Button
                   id="downloadAnalysisResult"
                   type="primary"
                   onClick={downloadResult}
@@ -330,6 +361,36 @@ export class Result extends React.Component {
                     pagination={{ pageSize: 5 }}
                     rowKey="model"
                   />
+                </div>
+              </Modal>
+            )}
+            {this.state.showMosesOptions && (
+              <Modal
+                centered
+                title="Moses Options"
+                visible={true}
+                onOk={() => this.downloadMosesOptions()}
+                onCancel={() => this.setState({ showMosesOptions: false })}
+                okText={
+                  <React.Fragment>
+                    <Icon type="download" style={{ marginRight: 5 }} />
+                    Download as YAML file
+                  </React.Fragment>
+                }
+                bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
+              >
+                <div style={{ marginTop: 15, marginBottom: 15 }}>
+                  {this.state.mosesOptions ? (
+                    <ReactJson
+                      src={this.state.mosesOptions}
+                      enableClipboard={false}
+                      displayDataTypes={false}
+                      displayObjectSize={false}
+                      name={null}
+                    />
+                  ) : (
+                    this.fetchMosesOptions()
+                  )}
                 </div>
               </Modal>
             )}

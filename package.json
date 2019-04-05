@@ -35,10 +35,12 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
-    "moment": "^2.22.2",
     "antd": "^3.10.4",
+    "js-yaml": "^3.13.1",
+    "moment": "^2.22.2",
     "react": "^16.6.1",
-    "react-dom": "^16.6.1"
+    "react-dom": "^16.6.1",
+    "react-json-view": "^1.19.1"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "./src/setupTests.js",
