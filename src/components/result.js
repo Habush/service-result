@@ -378,6 +378,7 @@ export class Result extends React.Component {
                   </React.Fragment>
                 }
                 bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
+                okButtonProps={{ disabled: !this.state.mosesOptions }}
               >
                 <div style={{ marginTop: 15, marginBottom: 15 }}>
                   {this.state.mosesOptions ? (
