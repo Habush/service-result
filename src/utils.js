@@ -4,6 +4,8 @@ export const AnalysisStatus = {
   ERROR: -1
 };
 
+export const FilterFor = { Overfitness: 1, Score: 2 };
+
 export const SERVER_ADDRESS = process.env.SERVICE_ADDR
   ? process.env.SERVICE_ADDR
   : "http://localhost:5000";
@@ -25,10 +27,15 @@ export const fetchAnalysisStatus = id => {
   );
 };
 
-export const filterResult = (id, filter, value) => {
+export const filterResult = (id, filter, value, filterFor) => {
+  console.log("filterFor", filterFor);
   return fetch(
-    `${SERVER_ADDRESS}/filter/${id}?filter=${filter}&value=${value}`
-  ).then(response => response.json());
+    `${SERVER_ADDRESS}/filter/${
+      filterFor === FilterFor.Overfitness ? "overfitness" : "score"
+    }/${id}?filter=${filter}&value=${value}`
+  ).then(response => {
+    response.json();
+  });
 };
 
 export const downloadFilteredResult = id => {
