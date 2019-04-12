@@ -20,7 +20,7 @@ import {
   FilterFor
 } from "../utils";
 import { Loader } from "./loader";
-import { safeDump } from "js-yaml";
+import * as yml from "js-yaml";
 import ReactJson from "react-json-view";
 
 const formatDecimal = num => parseFloat(num).toFixed(6);
@@ -162,9 +162,8 @@ export class Result extends React.Component {
   }
 
   downloadMosesOptions() {
-    const yaml = `data:text/yaml;charset=utf-8, ${encodeURIComponent(
-      safeDump(this.state.mosesOptions)
-    )}`;
+    const dump = yml.dump(this.state.mosesOptions, { indent: 4 });
+    const yaml = `data:text/yaml;charset=utf-8,${encodeURIComponent(dump)}`;
     const link = document.createElement("a");
     link.setAttribute("href", yaml);
     link.setAttribute("download", "moses-options.yaml");
