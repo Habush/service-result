@@ -9,12 +9,18 @@ import {
   Select,
   InputNumber,
   Modal,
-  Table
+  Table,
+  Radio
 } from "antd";
 import moment from "moment";
-import { AnalysisStatus, filterResult, getQueryValue } from "../utils";
+import {
+  AnalysisStatus,
+  filterResult,
+  getQueryValue,
+  FilterFor
+} from "../utils";
 import { Loader } from "./loader";
-import { safeDump } from "js-yaml";
+import * as yml from "js-yaml";
 import ReactJson from "react-json-view";
 
 const formatDecimal = num => parseFloat(num).toFixed(6);
@@ -134,6 +140,7 @@ export class Result extends React.Component {
       showFilterForm: false,
       showMosesOptions: false,
       mosesOptions: undefined,
+      filterFor: FilterFor.Overfitness,
       filterParameter: "accuracy",
       filterValue: 0.5,
       filtering: false,
@@ -155,9 +162,8 @@ export class Result extends React.Component {
   }
 
   downloadMosesOptions() {
-    const yaml = `data:text/yaml;charset=utf-8, ${encodeURIComponent(
-      safeDump(this.state.mosesOptions)
-    )}`;
+    const dump = yml.dump(this.state.mosesOptions, { indent: 4 });
+    const yaml = `data:text/yaml;charset=utf-8,${encodeURIComponent(dump)}`;
     const link = document.createElement("a");
     link.setAttribute("href", yaml);
     link.setAttribute("download", "moses-options.yaml");
@@ -171,17 +177,28 @@ export class Result extends React.Component {
     filterResult(
       getQueryValue("id"),
       this.state.filterParameter,
-      this.state.filterValue
-    ).then(response => {
-      response.models
-        ? this.setState({
+      this.state.filterValue,
+      this.state.filterFor
+    )
+      .then(response => {
+        if (response.models) {
+          this.setState({
             filtering: false,
             filteredResult: response
-          })
-        : message.error(
-            response.message || "An error occured, please try again later!"
-          );
-    });
+          });
+        } else {
+          message.error("An error occured, please try again later!");
+          this.setState({
+            filtering: false
+          });
+        }
+      })
+      .catch(err => {
+        message.error("An error occured, please try again later!");
+        this.setState({
+          filtering: false
+        });
+      });
   }
 
   render() {
@@ -307,9 +324,21 @@ export class Result extends React.Component {
                 disabled: renderValidationError(),
                 loading: this.state.filtering
               }}
-              bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
+              bodyStyle={{ paddingTop: 15, paddingBottom: 0 }}
             >
+              Filter for: <br />
+              <Radio.Group
+                buttonStyle="solid"
+                onChange={e => this.setState({ filterFor: e.target.value })}
+                value={this.state.filterFor}
+              >
+                <Radio.Button value={FilterFor.Overfitness}>
+                  Overfitness
+                </Radio.Button>
+                <Radio.Button value={FilterFor.Score}>Score</Radio.Button>
+              </Radio.Group>
               <div style={{ marginTop: 15, marginBottom: 15 }}>
+                Filter value: <br />
                 <Select
                   onChange={param => this.setState({ filterParameter: param })}
                   defaultValue={this.state.filterParameter}
