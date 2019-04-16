@@ -242,7 +242,7 @@ export class Result extends React.Component {
               <React.Fragment>
                 Analysis completed after
                 {" " +
-                  moment.duration(moment(end).diff(moment(start))).humanize()}
+                  moment.duration(end - start, "seconds").humanize()}
                 {progressBar}
                 <Alert
                   id="willExpireNotice"
