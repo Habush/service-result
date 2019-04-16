@@ -28,14 +28,11 @@ export const fetchAnalysisStatus = id => {
 };
 
 export const filterResult = (id, filter, value, filterFor) => {
-  console.log("filterFor", filterFor);
   return fetch(
-    `${SERVER_ADDRESS}/filter/${
-      filterFor === FilterFor.Overfitness ? "overfitness" : "score"
-    }/${id}?filter=${filter}&value=${value}`
-  ).then(response => {
-    response.json();
-  });
+    `${SERVER_ADDRESS}/filter/${id}?filter=${filter}&value=${value}&overfitness=${
+      filterFor === FilterFor.Overfitness ? 1 : 0
+    }`
+  ).then(response => response.json());
 };
 
 export const downloadFilteredResult = id => {

@@ -30,7 +30,7 @@ const formatResult = r => {
   return models.map(m => {
     const model = Object.assign({}, m);
     model.accuracy_train = formatDecimal(model.accuracy_train);
-    model.accuracy_test = formatDecimal(model.accuracy_train);
+    model.accuracy_test = formatDecimal(model.accuracy_test);
     model.precision_train = formatDecimal(model.precision_train);
     model.precision_test = formatDecimal(model.precision_test);
     model.recall_train = formatDecimal(model.recall_train);
@@ -179,8 +179,7 @@ export class Result extends React.Component {
       this.state.filterParameter,
       this.state.filterValue,
       this.state.filterFor
-    )
-      .then(response => {
+    ).then(response => {
         if (response.models) {
           this.setState({
             filtering: false,
@@ -434,7 +433,7 @@ export class Result extends React.Component {
             type="error"
             message={
               "Analysis failed after " +
-              moment.duration(moment(end).diff(moment(start))).humanize()
+              moment.duration(end - start, "seconds").humanize()
             }
             description={
               <Collapse
