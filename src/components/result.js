@@ -14,10 +14,10 @@ import {
 } from "antd";
 import moment from "moment";
 import {
-  AnalysisStatus,
-  filterResult,
-  getQueryValue,
-  FilterFor
+    AnalysisStatus,
+    filterResult,
+    getQueryValue,
+    FilterFor, downloadFilteredResult
 } from "../utils";
 import { Loader } from "./loader";
 import * as yml from "js-yaml";
